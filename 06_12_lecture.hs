@@ -1,5 +1,6 @@
 
 -- Verifica se um elemento pertence a uma lista
+{-# LANGUAGE BlockArguments #-}
 member :: Eq t => [t] -> t -> Bool
 member [] _ = False
 member (x:xs) y 
@@ -41,7 +42,7 @@ instance Visivel Int where
 
 instance (Visivel t) => Visivel [t] where
     toString xs = "[" ++ (concatMap toString xs) ++ "]"
-    size xs = (foldr (+) 0) (map size xs)
+    size xs = foldr (+) 0 (map size xs)
 
 iSort :: Ord t => [t] -> [t]
 iSort [] = []
@@ -59,10 +60,11 @@ Main> vSort [3::Int, 1::Int, 4::Int, 1::Int, 5::Int, 9::Int, 2::Int, 6::Int]
 
 
 --TODO make this compile 
+main :: IO ()
 main = do l <- getLine
-        do l2 <- getLine
-        putStrLn(l ++ "     " ++ l2)
-        putStrLn (show (member [1,2,3,4] 3))
-        putStrLn(l2)
-        do l3 <- return "sgfdfadf" -- diferente do return de linguagem imperativa
-        putStrLn(l3)
+          l2 <- getLine
+          putStrLn (l ++ "     " ++ l2)
+          putStrLn (show (member [1,2,3,4] 3))
+          putStrLn l2
+          l3 <- return "sgfdfadf" -- diferente do return de linguagem imperativa
+          putStrLn l3

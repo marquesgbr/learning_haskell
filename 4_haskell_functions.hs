@@ -7,7 +7,7 @@ qual elas pertencem. Elas são visíveis apenas dentro da função onde foram de
 sumDoubleSquare :: Int -> Int -> Int 
 sumDoubleSquare x y = dSqX + dSqY 
   where dSqX = 2 * (x * x) 
-        dSqY = 2 * (z * z)
+        dSqY = 2 * (y * y)
 
 -- Definicoes com where tambem podem ter seus proprios parametros
 sumDoubleSquare2 :: Int -> Int -> Int 
@@ -26,9 +26,9 @@ onde temos no final da definicao de um conjunto/funcao a explicacao dos parametr
  que a segue, depois da palavra-chave in. Separamos os Let com ";"
 -}
 
-let x = 3 + 2 in x^2 + 2*x - 4
+example1 = let x = 3 + 2 in x^2 + 2*x - 4
 
-let x = 3 + 2; y = 6 - 2 in x^2 + 2*x - y
+example2 = let x = 3 + 2; y = 6 - 2 in x^2 + 2*x - y
 
 
 sumSquares :: Int -> Int -> Int 
@@ -47,24 +47,25 @@ Regras:
 
 
 ehImpar :: Int -> Bool
-| n<=0 = False
-| otherwise = ehPar (n-1)
-
+ehImpar n
+  | n<=0 = False
+  | otherwise = ehPar (n-1)
 ehPar :: Int -> Bool
-| n<0 = False
-| n == 0 = True
-| otherwise = ehImpar (n-1)
+ehPar n
+  | n<0 = False
+  | n == 0 = True
+  | otherwise = ehImpar (n-1)
 
 
 totalVendas :: Int -> Int
 totalVendas n
-| n == 0 = vendas 0
-| otherwise = totalVendas(n-1) + vendas n
+  | n == 0 = vendas 0
+  | otherwise = totalVendas(n-1) + vendas n
 
 maxi :: Int -> Int -> Int
 maxi m n
-| m >= n = m
-| otherwise = n
+  | m >= n = m
+  | otherwise = n
 
 maxVendas :: Int -> Int
 maxVendas 0 = vendas 0
@@ -79,9 +80,12 @@ quando possível
 
 tailFat :: Int -> Int -> Int
 tailFat 0 x = x
-tailFat n x = tailFat (n-1) (n*x)
-
+fat :: Int -> Int
 fat n = tailFat n 1
+
+vendas :: Int -> Int
+vendas n = n * 10  -- exemplo de implementação
+
 
 {-
 Nesse exemplo com tailFat, x é o resultado acumulado até então (começa em 1), enquanto
