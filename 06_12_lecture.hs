@@ -41,7 +41,7 @@ instance Visivel Int where
     size _ = 120 -- tamanho padrao para Int (arbitrário)
 
 instance (Visivel t) => Visivel [t] where
-    toString xs = "[" ++ (concatMap toString xs) ++ "]"
+    toString xs = "[" ++ concatMap toString xs ++ "]"
     size xs = foldr (+) 0 (map size xs)
 
 iSort :: Ord t => [t] -> [t]
