@@ -132,7 +132,7 @@ concat' (x:xs) = x ++ (concat' xs)
 --REFAZER
 
 (++) :: [a] -> [a] -> [a]
-[] ++ [] = error "Duas listas vazias"
+[] ++ [] = []
 [] ++ ys = ys
 (x:xs) ++ ys = x: (xs ++ ys)
 
@@ -174,6 +174,12 @@ fibPair :: Integer -> (Integer, Integer)
 fibPair n
  | n == 0 = (0,1)
  | otherwise = fibStep(fibPair(n-1))
+
+ -- otherwise = let (a, b) = fibPair(n - 1) in (b, a+b)
+ -- otherwise = (y, x+y) where (x, y) = fibPair(n - 1)
+ -- otherwise = \(n-1) -> (y, x+y) where (x,y) = fibPair(n - 1)
+ -- otherwise = (\(x,y) -> (y, x+y)) (fibPair (n - 1)) 
+
 
 fastfib :: Integer -> Integer
 fastfib = fst . fibPair
@@ -316,3 +322,21 @@ ghci> [1..7] `union` [5..10]
 [1,2,3,4,5,6,7,8,9,10]
 
 -}
+
+-- Retorna todas as sublistas de uma lista
+-- Exemplo: sublistas [1,2,3] = [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+sublistas :: [a] -> [[a]]
+sublistas [] = [[]]
+sublistas (x:xs) = sublistas xs ++ map (x:) (sublistas xs)
+-- ou 
+sublistas2 :: [a] -> [[a]]
+sublistas2 [] = [[]]
+sublistas2 (x:xs) = [x:ys | ys <- sublistas2] ++ sublistas2
+
+transpose' :: [[a]] -> [[a]]
+transpose' [] = []
+transpose' ([]:_) = []
+transpose' matrix = firstColumn : transpose' rest
+    where
+        firstColumn = map head matrix
+        rest = map tail matrix
