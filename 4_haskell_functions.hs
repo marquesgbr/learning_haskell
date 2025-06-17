@@ -80,6 +80,7 @@ quando possível
 
 tailFat :: Int -> Int -> Int
 tailFat 0 x = x
+tailFat n x = tailFat (n-1) n*x
 fat :: Int -> Int
 fat n = tailFat n 1
 

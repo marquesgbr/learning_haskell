@@ -88,7 +88,7 @@ data Tree = Nil
 
 sumTree, depthTree :: Tree -> Integer
 sumTree Nil = 0
-sumTree (Node n t1 21) = n + sum t1 + sum t2
+sumTree (Node n t1 t2) = n + sumTree t1 + sumTree t2
 
 depthTree Nil = 0
 depthTree (Node _ t1 t2) = 1 + (max (depthTree t1) (depthTree t2))
@@ -200,29 +200,29 @@ fromList = foldl insertTree Nil
 
 -- Union Type
 
-data Either a b = Left a | Rigth b
+data Either a b = Left a | Right b
 
 funcEither :: (a -> c) -> (b -> c) -> Either a b -> c
 funcEither f g (Left x) = f x
-funcEither f g (Rigth y) = g y
+funcEither f g (Right y) = g y
 
 applyLeft :: (a -> c) -> Either a b -> c
 applyLeft f (Left x)  = f x
-applyLeft f (Rigth y) = error "applyLeft applied to Rigth"
+applyLeft f (Right y) = error "applyLeft applied to Right"
 
 
 data ListaPoli t = Null | Const t (ListaPoli t)
 
 paraListaBib :: ListaPoli t -> [t]
-paraListaBib (Null)      = []
+paraListaBib Null      = []
 paraListaBib (Const n l) = n : paraListaBib l
 
 -- 3 formas de lidar com erros:
 
 -- 1. Interromper a computação no instante do erro, essencialmente, usando error
--- É ruim porque eprde qualquer informação valiosa na computação já realizada
+-- É ruim porque perde qualquer informação valiosa na computação já realizada
 
--- 2. Escolher valores "Dummy". Em alguns casos, não fará sentindo
+-- 2. Escolher valores "Dummy". Em alguns casos, não fará sentido
 -- um valor "Dummy", logo, você adiciona um parâmetro na função
 -- que servirá como esse valor dummy. O problema dessa abordagem (2.)
 -- É que não saberemos quando de fato ocorreu um erro. Exemplo:
@@ -233,37 +233,37 @@ hd y [] = y
 
 -- 3. Usar um type error para capturar e processar erros:
 
-data MMaybe a = mJust a | mNothing
+data MMaybe a = MJust a | MNothing
                         deriving (Show, Eq, Read, Ord)
 
 errDiv :: Integer-> Integer-> MMaybe Integer
 errDiv n m
- |(m/=0) = mJust (n‘div‘m)
- |otherwise = mNothing
+ | m/=0 = MJust (n 'div' m)
+ |otherwise = MNothing
 
 novaDiv :: Integer -> Integer -> String
 novaDiv x y = case errDiv x y of
-                            mNothing -> "Divisão por Zero, Erro!!"
+                            MNothing -> "Divisão por Zero, Erro!!"
                             MJust n -> "Resultado da divisao: " ++ show n
 
 -- o Maybe nos permite lançar um erro e com isso, podemos transmitir, com mapMaybe
 -- ou Capturar esse erro, com maybe
 
-mapMaybe :: (a-> b)-> Maybe a-> Maybe b
-mapMaybe g Nothing = Nothing
-mapMaybe g (Just x) = Just (g x)
+mapMaybe :: (a-> b)-> MMaybe a-> MMaybe b
+mapMaybe g MNothing = MNothing
+mapMaybe g (MJust x) = MJust (g x)
 
-maybe :: b-> (a-> b)-> Maybe a-> b
-maybe n f Nothing = n
-maybe n f (Just x) = f x
+maybe :: b-> (a-> b)-> MMaybe a-> b
+maybe n f MNothing = n
+maybe n f (MJust x) = f x
 
-maybe 56 (1+) (mapMaybe (*3) (errDiv 9 0))
-=maybe 56 (1+) (mapMaybe(*3)Nothing)
-=maybe 56 (1+) Nothing
-=56
+-- maybe 56 (1+) (mapMaybe (*3) (errDiv 9 0))
+-- = maybe 56 (1+) (mapMaybe(*3)MNothing)
+-- = maybe 56 (1+) MNothing
+-- = 56
 
-maybe 56 (1+) (mapMaybe (*3) (errDiv 9 1))
-=maybe56(1+)(mapMaybe(*3)(Just9))
-=maybe56(1+)(Just27)
-=1+27
-=28
+-- maybe 56 (1+) (mapMaybe (*3) (errDiv 9 1))
+-- = maybe 56 (1+) (mapMaybe (*3) (MJust 9))
+-- = maybe 56 (1+) (MJust 27)
+-- = 1+27
+-- = 28

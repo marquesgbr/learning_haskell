@@ -31,16 +31,15 @@ area (Circle r) = pi*r*r
 area (Rectangle l h) = l*h
 
 instance Info Shape where
-    examples = [Circle 5.4, Recntagle 4.6 11]
-    size = round . area 
+    examples = [Circle 5.4, Rectangle 4.6 11]
+    size = round . area
 
--- Não entendi essa parte seguinte:
 
 instance Info a => Info [a] where
  examples = [ [] ] ++
             [[x]|x<-examples]++
-                [[x,y]|x<-examples,y<-examples]
- size = foldr (+) 1 . map size
+                [[x,y]|x<-examples, y<-examples]
+ size = foldr (+) 1 . map size 
 
 instance (Eq a,Eq b) => Eq (a,b) where
 (x,y) == (z,w) = x==z && y==w
@@ -64,7 +63,7 @@ class Info a where
 instance Info Int where
     examples = [-100..100]
 instance Info Char where
-    examples = [’a’,’A’,’z’,’Z’,’0’,’9’]
+    examples = ['a','A','z','Z','0','9']
 instance Info Bool where
     examples = [True,False]
     size True = 4
@@ -94,13 +93,13 @@ class Eq a => Ord a where
   
   max a1 a2
    
-   |  a1 /= a2 && a1 > a2  = a1
-   |  otherwise            = a2
+   |  a1 > a2   = a1
+   |  otherwise = a2
 
   min a1 a2
   
-   |  a1 /= a2 && a1 < a2  = a1
-   |  otherwise            = a2
+   |  a1 < a2   = a1
+   |  otherwise = a2
   
   compare a1 a2
    
