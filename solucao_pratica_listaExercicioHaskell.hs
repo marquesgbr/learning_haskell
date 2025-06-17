@@ -1,3 +1,5 @@
+import System.Win32 (searchPath)
+import Data.IntMap (fromList)
 -- Questao 2
 
 sublistas :: [a] -> [[a]]
@@ -12,7 +14,8 @@ poli m n p = (\x ->  (m * x * x) + (n * x) + p)
 
 
 listaPoli :: [(Integer,Integer,Integer)] -> [Integer->Integer]
-listaPoli l = [poli x y z | (x,y,z) <- l ]
+--listaPoli l = [poli x y z | (x,y,z) <- l ]
+listaPoli ((m,n,p):xs) = poli m n p : listaPoli xs
 
 appListaPoli :: [Integer->Integer] -> [Integer] -> [Integer]
 appListaPoli [] [] = []
@@ -65,12 +68,14 @@ type Apuracao = [(Voto, Integer)]
 
 
 instance Eq Voto where
+   (==) :: Voto -> Voto -> Bool
    (Presidente p1) == (Presidente p2) = p1 == p2
    (Senador s1)   == (Senador s2)   = s1 == s2  
    (Deputado d1) == (Deputado d2)  = d1 == d2
    Branco == Branco = True
    _ == _ = False
    
+umaUrna :: [Voto]
 umaUrna= [(Presidente 1), (Presidente 1) , 
  (Senador 1),(Senador 1),(Senador 1),
  (Presidente 2), (Presidente 3),
@@ -80,6 +85,7 @@ umaUrna= [(Presidente 1), (Presidente 1) ,
  Branco, Branco, (Presidente 1)
  ]
 
+umaApuracao :: [(Voto, Integer)]
 umaApuracao = [((Presidente 1), 1), ((Senador 1),3)] 
  
 totalVotos :: Urna -> Voto  -> Int
@@ -90,9 +96,11 @@ apurar :: Urna -> Apuracao -> Apuracao
 apurar (v:[]) ap = atualizarApuracaoVoto v ap
 apurar (v:vs) ap = apurar vs (atualizarApuracaoVoto v ap)     
 
+apurar2 :: [Voto] -> [(Voto, Int)]
 apurar2 [] = []
 apurar2 (x:xs) = (x, 1 + totalVotos xs x): apurar2 (filter (/=x) xs) 
 
+atualizarApuracaoVoto :: Voto -> [(Voto, Integer)] -> [(Voto, Integer)]
 atualizarApuracaoVoto voto ap
  | votoRegistrado ap voto = atualizarApuracao ap voto
  | otherwise = ap ++ [(voto,1)]
